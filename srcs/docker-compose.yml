@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  nnx:
+    image: nginx:latest
+    depends_on:
+      - wordpress
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    volumes:
+      - /home/cproesch/data/ngx:/etc/nginx/
+    environment:
+      DOCKER_TLS_VERIFY:
+      DOCKER_CERT_PATH:
+
+  wordpress:
+    image: wordpress:latest
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+    volumes:
+      - /home/cproesch/data/wp:/~
+
+    
+  mariadb:
+    image: mariadb:latest
+    restart: unless-stopped
+    volumes:
+      - /home/cproesch/data/mdb:/var/lib/mysql/
+
+
