@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  nnx:
+  nginx:
     image: nginx:latest
     depends_on:
       - wordpress
@@ -10,24 +10,42 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /home/cproesch/data/ngx:/etc/nginx/
+      - /home/cproesch/data/ngx:/etc/nginx/conf.d
     environment:
       DOCKER_TLS_VERIFY:
       DOCKER_CERT_PATH:
+    links:
+      - wordpress
 
   wordpress:
     image: wordpress:latest
     depends_on:
-      - mariadb
+      - mysql
     restart: unless-stopped
     volumes:
-      - /home/cproesch/data/wp:/~
+      - /home/cproesch/data/wp:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      MYSQL_ROOT_PASSWORD: mysql_root_pass
+      WORDPRESS_DB_USER: user_name
+      WORDPRESS_DB_PASSWORD: user_pass
+      WORS_DB_PASSWORD: user_pass
+      WORDPRESS_DB_NAME: db_nameDPRESS_DB_NAME: db_name
+    links:
+      - mysql
 
     
-  mariadb:
+  mysql:
     image: mariadb:latest
     restart: unless-stopped
     volumes:
       - /home/cproesch/data/mdb:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql_root_pass
+      MYSQL_DATABASE: db_name
+      MYSQL_USER: user_name
+      MYSQL_PASSWORD: user_pass
+
+
 
 
