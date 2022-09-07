@@ -3,7 +3,7 @@ version: '3'
 services:
 
   nginx:
-    image: nginx:latest
+    image: nginx
     depends_on:
       - wordpress
     restart: unless-stopped
@@ -18,7 +18,7 @@ services:
       - wordpress
 
   wordpress:
-    image: wordpress:latest
+    image: wordpress
     depends_on:
       - mysql
     restart: unless-stopped
@@ -36,7 +36,7 @@ services:
 
     
   mysql:
-    image: mariadb:latest
+    image: mariadb
     restart: unless-stopped
     volumes:
       - /home/cproesch/data/mdb:/var/lib/mysql/
