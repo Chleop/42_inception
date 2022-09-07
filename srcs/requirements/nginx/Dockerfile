@@ -1,8 +1,8 @@
 FROM debian:buster
 
-# RUN apt-get update \
-#     && apt-get install nginx
+RUN apt-get update \
+    && apt-get install nginx -y
 
 EXPOSE 443 9000
 
-CMD ["echo", "Kikou kikou"]
+CMD ["nginx", "-g", "daemon off;"]
