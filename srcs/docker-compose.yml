@@ -1,5 +1,6 @@
 version: '3'
 
+# modifier partout cproeschel par cproesch!
 services:
 
   nginx: #name of the container
@@ -40,7 +41,7 @@ services:
     image: mariadb
     restart: unless-stopped
     volumes:
-      - /home/cproeschel/data/mdb:/var/lib/mysql/
+      - /home/cproeschel/data/mdb:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: mysql_root_pass
       MYSQL_DATABASE: db_name

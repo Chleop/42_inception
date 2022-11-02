@@ -1,30 +1,40 @@
-DATA			=	$(addprefix $(DATA_DIR), $(DATA_SUB_DIR))
 DATA_DIR		=	/home/cproesch/data/
 DATA_SUB_DIR	=	mdb wp
+DATA			=	$(addprefix $(DATA_DIR), $(DATA_SUB_DIR))
+DC_FILE			=	srcs/docker-compose.yml
+HOSTS_FILE		=	/etc/hosts
+
+MKDIR 			=	mkdir -p
+MOD				=	sudo chmod
+ECHO 			=	echo
+SED 			=	sed
+D_CMD 			=	docker
+DC_CMD			=	docker-compose
 RM				=	rm -rf
 
-all:	$(NAME)
+all:
+		# $(MKDIR) $(DATA)
+		$(MKDIR) /home/cproeschel/data/mdb
+		$(MKDIR) /home/cproeschel/data/wp
+		$(MOD) 666 $(HOSTS_FILE)
+		$(ECHO) "127.0.0.1 cproesch.42.fr" >> $(HOSTS_FILE)
+		$(MOD) 644 $(HOSTS_FILE)
 
-$(NAME):
-			# mkdir $(DATA)
-			mkdir /home/cproeschel/data
-			mkdir /home/cproeschel/data/mdb
-			mkdir /home/cproeschel/data/wp
-			sudo chmod 666 /etc/hosts
-			echo "127.0.0.1 cproesch.42.fr" >> /etc/hosts
-			sudo chmod 644 /etc/hosts
-			docker-compose -f srcs/docker-compose.yml up -d
+up:
+		$(DC_CMD) -f $(DC_FILE) up -d
+
+down:
+		$(DC_CMD) -f $(DC_FILE) down
 
 clean:
-			# docker-compose -f srcs/docker-compose.yml down
-			sudo chmod 666 /etc/hosts
-			echo "127.0.0.1 cproesch.42.fr" >> /etc/hosts
-			sudo chmod 644 /etc/hosts
-			rm -rf /home/cproeschel/data
+		$(D_CMD) system prune
+		$(RM) $(DATA_DIR)
+		$(MOD) 666 $(HOSTS_FILE)
+		$(SED) '/cproesch/d' $(HOSTS_FILE)
+		$(MOD) 644 $(HOSTS_FILE)
 
-fclean:		clean
-			$(RM) $(NAME)
+fclean:	down clean
 
-re:			fclean all
+re:		clean all
 
-.PHONY:		re, all, clean, fclean
+.PHONY:	all, up, down, clean, fclean, re
