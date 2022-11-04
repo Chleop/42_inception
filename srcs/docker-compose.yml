@@ -1,6 +1,5 @@
 version: '3'
 
-# modifier partout cproeschel par cproesch!
 services:
 
   nginx: #name of the container
@@ -9,10 +8,8 @@ services:
       - wordpress
     restart: unless-stopped
     ports:
-      - "443:443" #hostport:containerport
-    volumes:
-      - /home/cproeschel/data/ngx:/etc/nginx/conf.d #pas sure que ce soit necessaire
-    environment: #environmental variables
+      - "443:443"
+    environment:
       DOCKER_TLS_VERIFY:
       DOCKER_CERT_PATH:
     links:
@@ -25,14 +22,14 @@ services:
       - mysql
     restart: unless-stopped
     volumes:
-      - /home/cproeschel/data/wp:/var/www/html
+      - wp:/var/www/html
     environment:
       WORDPRESS_DB_HOST: mysql
       MYSQL_ROOT_PASSWORD: mysql_root_pass
       WORDPRESS_DB_USER: user_name
       WORDPRESS_DB_PASSWORD: user_pass
       WORS_DB_PASSWORD: user_pass
-      # WORDPRESS_DB_NAME: db_nameDPRESS_DB_NAME: db_name
+      WORDPRESS_DB_NAME: db_name
     links:
       - mysql
 
@@ -41,7 +38,7 @@ services:
     image: mariadb
     restart: unless-stopped
     volumes:
-      - /home/cproeschel/data/mdb:/var/lib/mysql
+      - mdb:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: mysql_root_pass
       MYSQL_DATABASE: db_name
@@ -53,10 +50,17 @@ networks:
   default:
     name: inception-network
 
+
 volumes:
-  /home/cproeschel/data/wp:
+  wp:
     driver: local
-  /home/cproeschel/data/mdb:
+    driver_opts:
+      type: volume
+      device: /home/cproesch/data/wp
+  mdb:
     driver: local
+    driver_opts:
+      type: volume
+      device: /home/cproesch/data/mdb
 
 

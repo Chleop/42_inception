@@ -14,8 +14,8 @@ RM				=	rm -rf
 
 all:
 		# $(MKDIR) $(DATA)
-		$(MKDIR) /home/cproeschel/data/mdb
-		$(MKDIR) /home/cproeschel/data/wp
+		$(MKDIR) /home/cproesch/data/mdb
+		$(MKDIR) /home/cproesch/data/wp
 		$(MOD) 666 $(HOSTS_FILE)
 		$(ECHO) "127.0.0.1 cproesch.42.fr" >> $(HOSTS_FILE)
 		$(MOD) 644 $(HOSTS_FILE)
@@ -27,7 +27,7 @@ down:
 		$(DC_CMD) -f $(DC_FILE) down
 
 clean:
-		$(D_CMD) system prune
+		$(D_CMD) system prune -f
 		$(RM) $(DATA_DIR)
 		$(MOD) 666 $(HOSTS_FILE)
 		$(SED) '/cproesch/d' $(HOSTS_FILE)
@@ -35,6 +35,6 @@ clean:
 
 fclean:	down clean
 
-re:		clean all
+re:		fclean all
 
 .PHONY:	all, up, down, clean, fclean, re
