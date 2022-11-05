@@ -30,11 +30,14 @@ clean:
 		$(D_CMD) system prune -f
 		$(RM) $(DATA_DIR)
 		$(MOD) 666 $(HOSTS_FILE)
-		$(SED) '/cproesch/d' $(HOSTS_FILE)
+		$(SED) '/cproesch.42.fr/d' $(HOSTS_FILE)
 		$(MOD) 644 $(HOSTS_FILE)
+
+		# ajouter de quoi supprimer les images
 
 fclean:	down clean
 
 re:		fclean all
 
 .PHONY:	all, up, down, clean, fclean, re
+

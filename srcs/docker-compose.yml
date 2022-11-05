@@ -3,7 +3,8 @@ version: '3'
 services:
 
   nginx: #name of the container
-    image: nginx 
+    build: requirements/nginx
+    image: nginx:cproesch
     depends_on:
       - wordpress
     restart: unless-stopped
@@ -15,26 +16,9 @@ services:
     links:
       - wordpress
 
-
-  wordpress:
-    image: wordpress
-    depends_on:
-      - mysql
-    restart: unless-stopped
-    volumes:
-      - wp:/var/www/html
-    environment:
-      WORDPRESS_DB_HOST: mysql
-      MYSQL_ROOT_PASSWORD: mysql_root_pass
-      WORDPRESS_DB_USER: user_name
-      WORDPRESS_DB_PASSWORD: user_pass
-      WORS_DB_PASSWORD: user_pass
-      WORDPRESS_DB_NAME: db_name
-    links:
-      - mysql
-
     
   mysql:
+    #build: requirements/mariadb
     image: mariadb
     restart: unless-stopped
     volumes:
@@ -46,21 +30,40 @@ services:
       MYSQL_PASSWORD: user_pass
 
 
+  wordpress:
+    #build: requirements/wordpress
+    image: wordpress
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    volumes:
+      - wp:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: db_name
+      WORDPRESS_DB_USER: user_name
+      WORDPRESS_DB_PASSWORD: user_pass
+    links:
+      - mysql
+
+
 networks:
   default:
     name: inception-network
 
 
 volumes:
-  wp:
-    driver: local
-    driver_opts:
-      type: volume
-      device: /home/cproesch/data/wp
   mdb:
     driver: local
     driver_opts:
       type: volume
       device: /home/cproesch/data/mdb
+      o: bind
+  wp:
+    driver: local
+    driver_opts:
+      type: volume
+      device: /home/cproesch/data/wp
+      o: bind
 
 
