@@ -24,7 +24,7 @@ services:
     volumes:
       - mdb:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: mysql_root_pass
+      MYSQL_ROOT_PASSWORD: root_pass
       MYSQL_DATABASE: db_name
       MYSQL_USER: user_name
       MYSQL_PASSWORD: user_pass
@@ -53,17 +53,17 @@ networks:
 
 
 volumes:
-  mdb:
-    driver: local
-    driver_opts:
-      type: volume
-      device: /home/cproesch/data/mdb
-      o: bind
-  wp:
-    driver: local
-    driver_opts:
-      type: volume
-      device: /home/cproesch/data/wp
-      o: bind
+  mdb:  {}
+    #driver: local
+    #driver_opts:
+    #  type: volume
+    #  device: /home/cproesch/data/mdb
+    #  o: bind
+  wp: {}
+    #driver: local
+    #driver_opts:
+    #  type: volume
+    #  device: /home/cproesch/data/wp
+    #  o: bind
 
 

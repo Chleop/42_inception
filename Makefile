@@ -10,7 +10,7 @@ ECHO 			=	echo
 SED 			=	sed
 D_CMD 			=	docker
 DC_CMD			=	docker-compose
-RM				=	rm -rf
+RM				=	rm
 
 all:
 		# $(MKDIR) $(DATA)
@@ -27,17 +27,18 @@ down:
 		$(DC_CMD) -f $(DC_FILE) down
 
 clean:
+		$(DC_CMD) -f $(DC_FILE) down
 		$(D_CMD) system prune -f
-		$(RM) $(DATA_DIR)
+		$(D_CMD) $(RM) -f $($(D_CMD) ps -a -q)
+		$(D_CMD) rmi $ ($(D_CMD) images -a -q)
+		$(D_CMD) volume $(RM) -f $($(D_CMD) volume ls -q)
+		$(D_CMD) network rm 
+		$(RM) -rf $(DATA_DIR)
 		$(MOD) 666 $(HOSTS_FILE)
 		$(SED) '/cproesch.42.fr/d' $(HOSTS_FILE)
 		$(MOD) 644 $(HOSTS_FILE)
 
-		# ajouter de quoi supprimer les images
+re:		clean all
 
-fclean:	down clean
-
-re:		fclean all
-
-.PHONY:	all, up, down, clean, fclean, re
+.PHONY:	all, up, down, clean, re
 
