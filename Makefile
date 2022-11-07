@@ -28,11 +28,11 @@ down:
 
 clean:
 		$(DC_CMD) -f $(DC_FILE) down
-		$(D_CMD) system prune -f
 		$(D_CMD) $(RM) -f $($(D_CMD) ps -a -q)
-		$(D_CMD) rmi $ ($(D_CMD) images -a -q)
+		$(D_CMD) rmi $($(D_CMD) images -a -q)
 		$(D_CMD) volume $(RM) -f $($(D_CMD) volume ls -q)
 		$(D_CMD) network rm 
+		$(D_CMD) system prune -f
 		$(RM) -rf $(DATA_DIR)
 		$(MOD) 666 $(HOSTS_FILE)
 		$(SED) '/cproesch.42.fr/d' $(HOSTS_FILE)
