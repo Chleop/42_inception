@@ -18,8 +18,8 @@ services:
 
     
   mysql:
-    #build: requirements/mariadb
-    image: mariadb
+    build: requirements/mariadb
+    image: mariadb:cproesch
     restart: unless-stopped
     volumes:
       - mdb:/var/lib/mysql

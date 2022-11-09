@@ -2,8 +2,12 @@ FROM debian:buster
 
 # update package manager and install desired softwares
 RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install nginx -y openssl -y vim -y
+    #&& apt-get upgrade -y \
+    #&& apt-get install nginx -y openssl -y vim -y \
+    && apt-get install nginx -y openssl -y \
+    && mkdir -p /var/www/html/cproesch.42.fr
+
+RUN chown -R $USER:$USER /var/www/html/cproesch.42.fr
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -14,6 +18,7 @@ RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/ssl/cp
 
 # copy our modified local nginx config file inside the container
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY index.php /var/www/html/cproesch.42.fr/index.php
 
 EXPOSE 443
 

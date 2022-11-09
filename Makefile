@@ -19,19 +19,18 @@ all:
 		$(MOD) 666 $(HOSTS_FILE)
 		$(ECHO) "127.0.0.1 cproesch.42.fr" >> $(HOSTS_FILE)
 		$(MOD) 644 $(HOSTS_FILE)
-
-up:
 		$(DC_CMD) -f $(DC_FILE) up -d
 
 down:
 		$(DC_CMD) -f $(DC_FILE) down
 
 clean:
-		$(DC_CMD) -f $(DC_FILE) down
+		#$(DC_CMD) -f $(DC_FILE) down
+		$(D_CMD) stop $($(D_CMD) ps -q)
 		$(D_CMD) $(RM) -f $($(D_CMD) ps -a -q)
 		$(D_CMD) rmi $($(D_CMD) images -a -q)
 		$(D_CMD) volume $(RM) -f $($(D_CMD) volume ls -q)
-		$(D_CMD) network rm 
+		$(D_CMD) network rm inception-network
 		$(D_CMD) system prune -f
 		$(RM) -rf $(DATA_DIR)
 		$(MOD) 666 $(HOSTS_FILE)

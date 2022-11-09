@@ -4,7 +4,7 @@
 # from inside the container
 service mysql start
 
-# Set the root password
+# Set the root password = admin user
 # Setting the root password ensures that nobody can log into the MySQL
 # root user without the proper authorisation.
 mysql -u root -e "UPDATE mysql.user SET Password=PASSWORD('rootpwd') WHERE User='root';"
@@ -25,11 +25,11 @@ mysql -u root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('loc
 # access.  This should be removed.
 mysql -u root -e "DROP DATABASE IF EXISTS test;"
 
-# Create admin user
-mysql -u root -e "GRANT ALL ON *.* TO 'cproesch'@'localhost' IDENTIFIED BY 'cproeschpwd' WITH GRANT OPTION;"
+# Create wordpress database
+mysql -u root -e "CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
 
-# Create user
-mysql -u root -e "GRANT INSERT ON *.* TO 'other'@'localhost' IDENTIFIED BY 'otherpwd' WITH GRANT OPTION;"
+# Create user and give him all right on this database
+mysql -u root -e "GRANT ALL ON wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wppwd';"
 
 # Reload privilege tables (Make our changes take effect)
 mysql -u root -e "FLUSH PRIVILEGES;"

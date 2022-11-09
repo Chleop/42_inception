@@ -1,0 +1,1 @@
+<?php echo '<p>Hello from php index</p>'; ?>
