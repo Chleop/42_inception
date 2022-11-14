@@ -3,24 +3,32 @@ version: '3'
 services:
 
   nginx: #name of the container
-    build: requirements/nginx
     image: nginx:cproesch
-    depends_on:
-      - wordpress
+    build: requirements/nginx
     restart: unless-stopped
+    networks:
+      - inception-network
     ports:
       - "443:443"
-    environment:
-      DOCKER_TLS_VERIFY:
-      DOCKER_CERT_PATH:
-    links:
+    depends_on:
       - wordpress
-
+    #environment:
+    #  DOCKER_TLS_VERIFY:
+    #  DOCKER_CERT_PATH:
+    #links:
+    #  - wordpress
+      
     
   mysql:
-    #build: requirements/mariadb
-    image: mariadb
+    image: mariadb:cproesch
+    build:
+      context: requirements/mariadb
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
     restart: unless-stopped
+    networks:
+      - inception-network
     volumes:
       - mdb:/var/lib/mysql
     environment:
@@ -31,11 +39,17 @@ services:
 
 
   wordpress:
-    #build: requirements/wordpress
-    image: wordpress
+    image: wordpress:cproesch
+    build:
+      context: requirements/wordpress
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    restart: unless-stopped
+    networks:
+      - inception-network
     depends_on:
       - mysql
-    restart: unless-stopped
     volumes:
       - wp:/var/www/html
     environment:
@@ -43,13 +57,18 @@ services:
       WORDPRESS_DB_NAME: db_name
       WORDPRESS_DB_USER: user_name
       WORDPRESS_DB_PASSWORD: user_pass
-    links:
-      - mysql
+  #voir si possible de virer le lien 9000:9000 car normalement wordpress n'a
+  #pas besoin de communiquer avec l'exterieur, uniquement avec mariadb et nginx
+    #ports:
+    #  - "9000:9000"
+    #links:
+    #  - mysql
 
 
 networks:
-  default:
+  inception-network:
     name: inception-network
+    driver: bridge
 
 
 volumes:
@@ -65,5 +84,3 @@ volumes:
     #  type: volume
     #  device: /home/cproesch/data/wp
     #  o: bind
-
-

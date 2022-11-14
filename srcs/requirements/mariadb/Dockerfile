@@ -1,14 +1,18 @@
 FROM debian:buster
 
-#en fait peut-etre pas mariabd-serer, a voir quels paquets installer
+ARG USER_ID
+ARG GROUP_ID
+
 RUN apt-get -y update
 RUN apt-get -y upgrade
 #RUN apt-get install vim -y
 RUN apt-get install mariadb-server -y
 #RUN apt-get install mariadb-client -y
-#RUN rm -rf /var/lib/apt/lists/*
-#RUN mkdir -p /var/run/mysqld
-#RUN chown -R mysql:mysql /var/run/mysqld
+
+RUN usermod -u ${USER_ID} mysql
+RUN groupmod -g ${GROUP_ID} mysql
+RUN mkdir -p /var/run/mysqld
+RUN chown -R mysql:mysql /var /var/run /var/run/mysqld
 # ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
 #RUN chmod 777 /var/run/mysqld
 
