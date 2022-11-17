@@ -96,16 +96,22 @@ WORKDIR /var/www/html/wordpress
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar && chown -R www-data:www-data wp-cli.phar && cp wp-cli.phar /usr/local/bin/wp
 
-USER www-data
+# RUN service php7.3-fpm start
 
-RUN wp core download \
-    && wp config create --dbname=$MYSQL_DATABASE --dbuser=$MYSQL_USER --dbpass=$MYSQL_PASSWORD --dbhost=$MYSQL_HOSTNAME \
-    && wp core install --url="cproesch.42.fr" --title="SITE DE CPROESCH" --admin_user="cproesch" --admin_password="cproesch" --admin_email="votre@email.com" \
-    && wp user create bob bob@example.com --role=author --user_pass=bob
+# RUN wp core download
+# RUN wp config create --dbname=$MYSQL_DATABASE --dbuser=$MYSQL_USER --dbpass=$MYSQL_PASSWORD --dbhost=$MYSQL_HOSTNAME
+# RUN wp core install --url="cproesch.42.fr" --title="SITE DE CPROESCH" --admin_user="cproesch" --admin_password="cproesch" --admin_email="votre@email.com" \
+#     && wp user create bob bob@example.com --role=author --user_pass=bob
 
 EXPOSE 9000 3306
 
 # COPY index.php /var/www/html/wordpress/index.php
 
-CMD ["service" "php7.3-fpm" "start"]
+RUN mkdir -p /scripts
+COPY myscript.sh /scripts
+RUN chmod +x /scripts/myscript.sh
+
+USER www-data
+
+CMD ["./scripts/myscript.sh"]
 #CMD ["tail", "-f", "/dev/null"]

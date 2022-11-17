@@ -29,7 +29,7 @@ mysql -u root -e "DROP DATABASE IF EXISTS test;"
 mysql -u root -e "CREATE DATABASE $MYSQL_DATABASE DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
 
 # Create user and give him all right on this database
-mysql -u root -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'$MYSQL_HOSTNAME' IDENTIFIED BY '$MYSQL_PASSWORD';"
+mysql -u root -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 
 # Reload privilege tables (Make our changes take effect)
 mysql -u root -e "FLUSH PRIVILEGES;"
