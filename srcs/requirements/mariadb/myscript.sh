@@ -7,16 +7,16 @@ service mysql start
 # Set the root password = admin user
 # Setting the root password ensures that nobody can log into the MySQL
 # root user without the proper authorisation.
-mysql -u root -e "UPDATE mysql.user SET Password=PASSWORD('rootpwd') WHERE User='root';"
+mysql -u root -e "UPDATE mysql.user SET Password=PASSWORD('$MYSQL_ROOT_PASSWORD') WHERE User='root';"
 #UPDATE mysql.user SET Password=PASSWORD('$esc_pass') WHERE User='root';
-# Remove anonymous users
+# Remove anonymous userscat
 # By default, a MySQL installation has an anonymous user, allowing anyone
 # to log into MySQL without having to have a user account created for
 # them. You should remove them.
 mysql -u root -e "DELETE FROM mysql.user WHERE User='';"
 
 # Disallow remote root login
-# Normally, root should only be allowed to connect from 'localhost'.  This
+# Normally, root should only be allowed to connect from $MYSQL_HOSTNAME.  This
 # ensures that someone cannot guess at the root password from the network.
 mysql -u root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
 
@@ -26,10 +26,10 @@ mysql -u root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('loc
 mysql -u root -e "DROP DATABASE IF EXISTS test;"
 
 # Create wordpress database
-mysql -u root -e "CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+mysql -u root -e "CREATE DATABASE $MYSQL_DATABASE DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
 
 # Create user and give him all right on this database
-mysql -u root -e "GRANT ALL ON wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wppwd';"
+mysql -u root -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'$MYSQL_HOSTNAME' IDENTIFIED BY '$MYSQL_PASSWORD';"
 
 # Reload privilege tables (Make our changes take effect)
 mysql -u root -e "FLUSH PRIVILEGES;"

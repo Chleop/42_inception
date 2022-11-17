@@ -2,41 +2,47 @@ version: '3'
 
 services:
 
-  nginx: #name of the container
+  nginx:
     image: nginx:cproesch
     build: requirements/nginx
+    container_name: nginx
     restart: unless-stopped
     networks:
       - inception-network
+    volumes:
+      - wordpress:/var/www/html/wordpress
     ports:
       - "443:443"
     depends_on:
       - wordpress
-    #environment:
-    #  DOCKER_TLS_VERIFY:
-    #  DOCKER_CERT_PATH:
-    #links:
-    #  - wordpress
-      
-    
-  mysql:
+    environment:
+      DOCKER_TLS_VERIFY:
+      DOCKER_CERT_PATH:
+     
+  mariadb:
     image: mariadb:cproesch
     build:
       context: requirements/mariadb
       args:
         USER_ID: ${USER_ID}
         GROUP_ID: ${GROUP_ID}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_HOSTNAME: ${MYSQL_HOSTNAME}
+    container_name: mariadb
     restart: unless-stopped
     networks:
       - inception-network
     volumes:
-      - mdb:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root_pass
-      MYSQL_DATABASE: db_name
-      MYSQL_USER: user_name
-      MYSQL_PASSWORD: user_pass
-
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
 
   wordpress:
     image: wordpress:cproesch
@@ -45,25 +51,25 @@ services:
       args:
         USER_ID: ${USER_ID}
         GROUP_ID: ${GROUP_ID}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_HOSTNAME: ${MYSQL_HOSTNAME}
+    container_name: wordpress
     restart: unless-stopped
     networks:
       - inception-network
     depends_on:
-      - mysql
+      - mariadb
     volumes:
-      - wp:/var/www/html
+      - wordpress:/var/www/html/wordpress
     environment:
-      WORDPRESS_DB_HOST: mysql
-      WORDPRESS_DB_NAME: db_name
-      WORDPRESS_DB_USER: user_name
-      WORDPRESS_DB_PASSWORD: user_pass
-  #voir si possible de virer le lien 9000:9000 car normalement wordpress n'a
-  #pas besoin de communiquer avec l'exterieur, uniquement avec mariadb et nginx
-    #ports:
-    #  - "9000:9000"
-    #links:
-    #  - mysql
-
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
 
 networks:
   inception-network:
@@ -72,15 +78,16 @@ networks:
 
 
 volumes:
-  mdb:  {}
-    #driver: local
-    #driver_opts:
-    #  type: volume
-    #  device: /home/cproesch/data/mdb
-    #  o: bind
-  wp: {}
-    #driver: local
-    #driver_opts:
-    #  type: volume
-    #  device: /home/cproesch/data/wp
-    #  o: bind
+  mariadb:
+    driver: local
+    driver_opts:
+     type: volume
+     device: /home/cproesch/data/mariadb
+     o: bind
+
+  wordpress:
+    driver: local
+    driver_opts:
+     type: volume
+     device: /home/cproesch/data/wordpress
+     o: bind

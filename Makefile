@@ -1,5 +1,5 @@
 DATA_DIR		=	/home/cproesch/data/
-DATA_SUB_DIR	=	mdb wp
+DATA_SUB_DIR	=	mariadb wordpress
 DATA			=	$(addprefix $(DATA_DIR), $(DATA_SUB_DIR))
 DC_FILE			=	srcs/docker-compose.yml
 HOSTS_FILE		=	/etc/hosts
@@ -22,6 +22,9 @@ all:
 		$(MOD) 644 $(HOSTS_FILE)
 		$(ECHO) "USER_ID=$(UID)" >> $(ENV_FILE)
 		$(ECHO) "GROUP_ID=$(GID)" >> $(ENV_FILE)
+		$(DC_CMD) -f $(DC_FILE) up -d
+
+up:
 		$(DC_CMD) -f $(DC_FILE) up -d
 
 down:
@@ -51,6 +54,8 @@ rm-domain:
 		$(SED) '/cproesch.42.fr/d' $(HOSTS_FILE)
 		$(MOD) 755 /etc
 		$(MOD) 644 $(HOSTS_FILE)
+		$(SED) '/USER_ID=/d' $(ENV_FILE)
+		$(SED) '/GROUP_ID=/d' $(ENV_FILE)
 
 re:		clean all
 

@@ -3,8 +3,10 @@ FROM debian:buster
 # update package manager and install desired softwares
 RUN apt-get update \
     && apt-get upgrade -y \
-    && apt-get install nginx -y openssl -y vim -y \
-    && mkdir -p /var/www/html/wordpress \
+    && apt-get install nginx -y openssl -y vim -y
+
+# pas besoin ici car fait dans wordpress 
+RUN mkdir -p /var/www/html/wordpress \
     && chown -R www-data:www-data /var/www/html/wordpress
 
 # forward request and error logs to docker log collector
@@ -16,11 +18,11 @@ RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/ssl/cp
 
 # copy our modified local nginx config file inside the container
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
-COPY index.php /var/www/html/wordpress/index.php
 
+#peut-etre pas necessaire etant donne que c'est precise dans le docker-compose
 EXPOSE 443
 
-USER www-data
+# USER www-data
 
 CMD ["nginx", "-g", "daemon off;"]
 #CMD ["tail", "-f", "/dev/null"]
