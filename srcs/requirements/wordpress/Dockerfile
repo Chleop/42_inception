@@ -103,15 +103,14 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 # RUN wp core install --url="cproesch.42.fr" --title="SITE DE CPROESCH" --admin_user="cproesch" --admin_password="cproesch" --admin_email="votre@email.com" \
 #     && wp user create bob bob@example.com --role=author --user_pass=bob
 
-EXPOSE 9000 3306
-
 # COPY index.php /var/www/html/wordpress/index.php
 
-RUN mkdir -p /scripts
-COPY myscript.sh /scripts
-RUN chmod +x /scripts/myscript.sh
+COPY myscript.sh .
+RUN chmod +x myscript.sh
 
 USER www-data
 
-CMD ["./scripts/myscript.sh"]
+EXPOSE 9000 3306
+
+ENTRYPOINT ["sh", "myscript.sh"]
 #CMD ["tail", "-f", "/dev/null"]

@@ -30,7 +30,7 @@ up:
 down:
 		$(DC_CMD) -f $(DC_FILE) down
 
-clean:	stop rm-containers rm-images rm-volumes rm-network rm-domain
+clean:	stop rm-containers rm-images rm-volumes rm-restofit
 
 stop:
 		$(D_CMD) stop $(shell $(D_CMD) ps -q)
@@ -45,10 +45,9 @@ rm-volumes:
 		$(D_CMD) volume $(RM) -f $(shell $(D_CMD) volume ls -q)
 		$(RM) -rf $(DATA_DIR)
 
-rm-network:
+rm-restofit:
 		$(D_CMD) network rm inception-network
-
-rm-domain:
+		$(D_CMD) system prune -a
 		$(MOD) 666 $(HOSTS_FILE)
 		$(MOD) 777 /etc
 		$(SED) '/cproesch.42.fr/d' $(HOSTS_FILE)
@@ -57,6 +56,8 @@ rm-domain:
 		$(SED) '/USER_ID=/d' $(ENV_FILE)
 		$(SED) '/GROUP_ID=/d' $(ENV_FILE)
 
+
 re:		clean all
 
-.PHONY:	all, up, down, clean, re, stop, rm-containers, rm-images, rm-volumes, rm-network, rm-domain
+.PHONY:	all, up, down, clean, re, stop, rm-containers, rm-images, rm-volumes, rm-restofit
+
