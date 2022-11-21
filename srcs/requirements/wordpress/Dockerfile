@@ -113,4 +113,3 @@ USER www-data
 EXPOSE 9000 3306
 
 ENTRYPOINT ["sh", "myscript.sh"]
-#CMD ["tail", "-f", "/dev/null"]

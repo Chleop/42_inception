@@ -20,9 +20,8 @@ RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/ssl/cp
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
 #peut-etre pas necessaire etant donne que c'est precise dans le docker-compose
-EXPOSE 443
+#EXPOSE 443
 
-# USER www-data
+#USER www-data
 
 CMD ["nginx", "-g", "daemon off;"]
-#CMD ["tail", "-f", "/dev/null"]

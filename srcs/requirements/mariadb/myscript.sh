@@ -9,6 +9,7 @@ service mysql start
 # root user without the proper authorisation.
 mysql -u root -e "UPDATE mysql.user SET Password=PASSWORD('$MYSQL_ROOT_PASSWORD') WHERE User='root';"
 #UPDATE mysql.user SET Password=PASSWORD('$esc_pass') WHERE User='root';
+mysql -u root -e "UPDATE mysql.user SET plugin='' WHERE User='root';"
 # Remove anonymous userscat
 # By default, a MySQL installation has an anonymous user, allowing anyone
 # to log into MySQL without having to have a user account created for

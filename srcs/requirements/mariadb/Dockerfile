@@ -31,4 +31,3 @@ RUN chmod +x /scripts/myscript.sh \
 EXPOSE 3306
 
 CMD ["mysqld_safe"]
-#CMD ["tail", "-f", "/dev/null"]
